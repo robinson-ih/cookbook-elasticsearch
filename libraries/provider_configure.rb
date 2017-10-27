@@ -16,9 +16,9 @@ class ElasticsearchCookbook::ConfigureProvider < Chef::Provider::LWRPBase
     default_configuration = new_resource.default_configuration.dup
     # if a subdir parameter is missing but dir is set, infer the subdir name
     # then go and be sure it's also set in the YML hash if it wasn't given there
-    if new_resource.path_conf && default_configuration['path.conf'].nil?
-      default_configuration['path.conf'] = new_resource.path_conf
-    end
+    #if new_resource.path_conf && default_configuration['path.conf'].nil?
+    #  default_configuration['path.conf'] = new_resource.path_conf
+    #end
 
     if new_resource.path_data && default_configuration['path.data'].nil?
       default_configuration['path.data'] = new_resource.path_data
@@ -78,7 +78,7 @@ class ElasticsearchCookbook::ConfigureProvider < Chef::Provider::LWRPBase
     params = {}
     params[:ES_HOME] = new_resource.path_home
     params[:JAVA_HOME] = new_resource.java_home
-    params[:CONF_DIR] = new_resource.path_conf
+    params[:ES_PATH_CONF] = new_resource.path_conf
     params[:DATA_DIR] = new_resource.path_data
     params[:LOG_DIR] = new_resource.path_logs
     params[:PID_DIR] = new_resource.path_pid
@@ -150,6 +150,7 @@ class ElasticsearchCookbook::ConfigureProvider < Chef::Provider::LWRPBase
 
     # workaround for https://github.com/elastic/cookbook-elasticsearch/issues/590
     config_vars = ElasticsearchCookbook::HashAndMashBlender.new(merged_configuration).to_hash
+    config_vars.delete('path.conf')
 
     yml_template = template "elasticsearch.yml-#{default_config_name}" do
       path "#{new_resource.path_conf}/elasticsearch.yml"
