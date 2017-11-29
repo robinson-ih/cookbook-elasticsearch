@@ -159,6 +159,7 @@ class ElasticsearchCookbook::ConfigureProvider < Chef::Provider::LWRPBase
       owner es_user.username
       group es_user.groupname
       mode '0640'
+      sensitive true
       helpers(ElasticsearchCookbook::Helpers)
       variables(config: config_vars)
       action :nothing
